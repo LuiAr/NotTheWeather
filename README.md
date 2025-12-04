@@ -10,6 +10,7 @@ A beautiful iOS app that compares today's weather with last year's weather for t
 - **Visual Indicators**: Easy-to-understand indicators showing if weather is typical or unusual
 - **Detailed Metrics**: Temperature, humidity, wind speed, and more
 - **Location-Based**: Automatically uses your current location
+- **Automated Data Collection**: GitHub Actions automatically collects weather data daily for Stockholm and Göteborg
 
 ## Screenshots
 
@@ -152,6 +153,68 @@ var isSignificantChange: Bool {
     abs(temperatureDifference) > 5.0  // Change this threshold
 }
 ```
+
+## Automated Weather Data Collection 🤖
+
+This repository includes a GitHub Actions workflow that automatically collects weather data daily for Stockholm and Göteborg. This builds up historical data over time, eliminating the need for expensive historical weather API subscriptions!
+
+### Features
+
+- **Daily Collection**: Runs automatically every day at 12:00 UTC
+- **Multiple Cities**: Stockholm and Göteborg (easily expandable)
+- **Structured Storage**: Organized by city, year, and month
+- **Free Historical Data**: Build your own historical weather database
+- **No Maintenance**: Fully automated via GitHub Actions
+
+### Quick Setup
+
+1. Get a free [OpenWeatherMap API key](https://openweathermap.org/api)
+2. Add it to GitHub Secrets as `OPENWEATHER_API_KEY`
+3. Done! Data will be collected automatically
+
+For detailed setup instructions, see [WEATHER_COLLECTION_SETUP.md](WEATHER_COLLECTION_SETUP.md)
+
+### Data Structure
+
+```
+weather-data/
+├── stockholm/
+│   ├── 2025/2025-12.json    # Monthly detailed data
+│   └── daily/2025-12-03.json # Daily summaries
+└── goteborg/
+    └── (same structure)
+```
+
+### Using Collected Data in the App
+
+After a year of data collection, you can use the stored historical data instead of the paid API:
+
+```swift
+// Load last year's weather from stored data
+let lastYearDate = Calendar.current.date(byAdding: .year, value: -1, to: Date())
+let dateString = formatDate(lastYearDate) // "2024-12-03"
+
+// Fetch from GitHub repository
+let url = "https://raw.githubusercontent.com/yourusername/NotTheWeather/main/weather-data/stockholm/daily/\(dateString).json"
+let historicalWeather = try await fetchFromURL(url)
+```
+
+### View Collected Data
+
+Use the included viewer script:
+
+```bash
+# View today's weather
+python scripts/view_weather_data.py daily stockholm
+
+# View monthly statistics
+python scripts/view_weather_data.py monthly stockholm 2025 12
+
+# Compare two dates
+python scripts/view_weather_data.py compare stockholm 2025-12-03 2024-12-03
+```
+
+See [weather-data/README.md](weather-data/README.md) for more details.
 
 ## Future Features 🚀
 
