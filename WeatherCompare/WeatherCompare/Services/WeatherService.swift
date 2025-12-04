@@ -35,13 +35,24 @@ class WeatherService: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    // Replace with your OpenWeatherMap API key
-    // Get a free key at: https://openweathermap.org/api
-    private let apiKey = "YOUR_API_KEY_HERE"
+    // API key is loaded from environment variable OPENWEATHER_API_KEY
+    // See README.md for instructions on setting environment variables in Xcode
+    private let apiKey: String
     private let baseURL = "https://api.openweathermap.org/data/2.5"
 
+    init() {
+        // Try to load API key from environment variable
+        if let envApiKey = ProcessInfo.processInfo.environment["OPENWEATHER_API_KEY"], !envApiKey.isEmpty {
+            self.apiKey = envApiKey
+        } else {
+            // Fallback to empty string - will trigger apiKeyMissing error when used
+            self.apiKey = ""
+            print("⚠️ Warning: OPENWEATHER_API_KEY environment variable not set")
+        }
+    }
+
     func fetchCurrentWeather(latitude: Double, longitude: Double) async throws -> WeatherData {
-        guard !apiKey.isEmpty && apiKey != "YOUR_API_KEY_HERE" else {
+        guard !apiKey.isEmpty else {
             throw WeatherError.apiKeyMissing
         }
 
@@ -72,7 +83,7 @@ class WeatherService: ObservableObject {
     }
 
     func fetchHistoricalWeather(latitude: Double, longitude: Double, date: Date) async throws -> WeatherData {
-        guard !apiKey.isEmpty && apiKey != "YOUR_API_KEY_HERE" else {
+        guard !apiKey.isEmpty else {
             throw WeatherError.apiKeyMissing
         }
 

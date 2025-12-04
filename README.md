@@ -46,47 +46,54 @@ cd NotTheWeather
 
 ### 3. Configure the API Key
 
-Open `WeatherCompare/WeatherCompare/Services/WeatherService.swift` and replace `YOUR_API_KEY_HERE` with your actual API key:
+The app now uses **environment variables** for the API key (more secure than hardcoding):
 
-```swift
-private let apiKey = "your_actual_api_key_here"
-```
+1. Open the `WeatherCompare` folder in Xcode
+2. Edit the app scheme: **Product → Scheme → Edit Scheme** (or `Cmd + <`)
+3. Go to **Run → Arguments → Environment Variables**
+4. Add a new variable:
+   - **Name**: `OPENWEATHER_API_KEY`
+   - **Value**: Your actual API key
+5. Make sure the checkbox is **enabled**
+
+For detailed instructions with screenshots, see [XCODE_SETUP.md](XCODE_SETUP.md)
 
 ### 4. Open in Xcode
 
 ```bash
 cd WeatherCompare
-open WeatherCompare.xcodeproj
 ```
 
-Or if using Xcode 15+, you can open the folder directly as it contains Swift Package Manager support.
+Then in Xcode:
+- **File → Open** and select the `WeatherCompare` folder (Xcode 15+)
 
 ### 5. Build and Run
 
-1. Select your target device or simulator
+1. Select your target device or simulator (iOS 17.0+)
 2. Press `Cmd + R` to build and run
 3. Allow location permissions when prompted
+
+**Note**: The app works without an API key using demo data. Set the environment variable to use real weather data.
 
 ## Project Structure
 
 ```
 WeatherCompare/
-├── WeatherCompare/
-│   ├── WeatherCompareApp.swift      # App entry point
-│   ├── ContentView.swift            # Main view
-│   ├── Models/
-│   │   └── WeatherData.swift        # Data models
-│   ├── Services/
-│   │   ├── WeatherService.swift     # API service
-│   │   └── LocationManager.swift    # Location handling
-│   ├── Views/
-│   │   ├── GlassCard.swift          # Reusable glass components
-│   │   ├── WeatherCardView.swift    # Individual weather cards
-│   │   └── ComparisonIndicatorView.swift  # Comparison UI
-│   └── Resources/
-│       ├── Assets.xcassets/         # App assets
-│       └── Info.plist               # App configuration
-└── Package.swift                     # Swift Package Manager
+└── WeatherCompare/
+    ├── WeatherCompareApp.swift      # App entry point
+    ├── ContentView.swift            # Main view
+    ├── Models/
+    │   └── WeatherData.swift        # Data models
+    ├── Services/
+    │   ├── WeatherService.swift     # API service (uses env variables)
+    │   └── LocationManager.swift    # Location handling
+    ├── Views/
+    │   ├── GlassCard.swift          # Reusable glass components
+    │   ├── WeatherCardView.swift    # Individual weather cards
+    │   └── ComparisonIndicatorView.swift  # Comparison UI
+    └── Resources/
+        ├── Assets.xcassets/         # App assets
+        └── Info.plist               # App configuration
 ```
 
 ## Usage
